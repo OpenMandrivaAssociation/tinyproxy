@@ -1,19 +1,17 @@
-%define name tinyproxy
-%define their_version 1.6.3
-%define release 2mdk
-
-Name: %{name}
-Version: 1.6.3
-Release: %{release}
-Summary: A lightweight, non-caching, optionally anonymizing http proxy
-License: GPL
-Source0: http://prdownloads.sourceforge.net/tinyproxy/%{name}-%{their_version}.tar.bz2
-Source1: %{name}.init
-Patch:	%name-makefile.patch.bz2
-Group: System/Servers
-Url:        http://tinyproxy.sourceforge.net
-BuildRoot:  %{_tmppath}/%{name}-%{version}-root
-PreReq: rpm-helper
+Name:           tinyproxy
+Version:        1.6.3
+Release:        %mkrel 3
+Epoch:          0
+Summary:        Lightweight, non-caching, optionally anonymizing HTTP proxy
+License:        GPL
+URL:            http://tinyproxy.sourceforge.net/
+Source0:        http://mesh.dl.sourceforge.net/sourceforge/tinyproxy/tinyproxy-%{version}.tar.gz
+Source1:        %{name}.init
+Patch0:         %{name}-makefile.patch
+Group:          System/Servers
+Requires(post): rpm-helper
+Requires(preun): rpm-helper
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 An anonymizing http proxy which is very light on system resources,
@@ -24,39 +22,36 @@ on a per-header basis).
 
 %prep
 %setup -q
-
 %patch0 -p1
 
 %build
-%serverbuild
-rm -f Makefile
-aclocal
-automake -a
-autoconf
-%configure --enable-xtinyproxy --enable-filter \
-	--enable-tunnel  --enable-upstream \
-	--with-config=%{_sysconfdir}/tinyproxy  --with-stathost=localhost \
-	--program-prefix=""
-
-%make
+%{serverbuild}
+%{_bindir}/autoreconf -i -v -f
+%{configure2_5x} --enable-xtinyproxy \
+                 --enable-filter \
+                 --enable-tunnel \
+                 --enable-upstream \
+                 --with-config=%{_sysconfdir}/tinyproxy \
+                 --with-stathost=localhost \
+                 --program-prefix=""
+%{make}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p  $RPM_BUILD_ROOT/%{_sysconfdir}/tinyproxy
-mkdir -p  $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
-mkdir -p  $RPM_BUILD_ROOT/%{_initrddir}
+%{__rm} -rf %{buildroot}
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/tinyproxy
+%{__mkdir_p} %{buildroot}%{_sysconfdir}/sysconfig
+%{__mkdir_p} %{buildroot}%{_initrddir}
 
-%makeinstall bindir=$RPM_BUILD_ROOT/%{_sbindir}
+%{makeinstall} bindir=%{buildroot}%{_sbindir}
 
+%{__cp} -a doc/tinyproxy.conf %{buildroot}%{_sysconfdir}/tinyproxy/tinyproxy.conf
+/bin/touch %{buildroot}%{_sysconfdir}/tinyproxy/filter
 
-install -m 644 doc/%{name}.conf $RPM_BUILD_ROOT/%{_sysconfdir}/tinyproxy/
-touch $RPM_BUILD_ROOT/%{_sysconfdir}/tinyproxy/filter
-
-install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/%{_initrddir}/tinyproxy
-echo "FLAGS=\" -c /etc/tinyproxy/tinyproxy.conf\"" > $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/tinyproxy
+%{__cp} -a %{SOURCE1} %{buildroot}%{_initrddir}/tinyproxy
+/bin/echo "FLAGS=\" -c /etc/tinyproxy/tinyproxy.conf\"" > %{buildroot}%{_sysconfdir}/sysconfig/tinyproxy
 
 %clean
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf %{buildroot}
 
 %post
 %_post_service tinyproxy
@@ -65,14 +60,14 @@ echo "FLAGS=\" -c /etc/tinyproxy/tinyproxy.conf\"" > $RPM_BUILD_ROOT/%{_sysconfd
 %_preun_service tinyproxy
 
 %files
-%defattr(-,root,root)
+%defattr(0644,root,root,0755)
 %doc doc/{HTTP_ERROR_CODES,RFC_INFO,report.sh,tinyproxy.conf,filter-howto.txt}
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO 
-%{_sbindir}/%{name}
-%{_mandir}/man8/*
-%dir %{_sysconfdir}/%{name}
-%{_datadir}/%{name}
+%attr(0755,root,root) %{_sbindir}/tinyproxy
+%{_mandir}/man8/tinyproxy.8*
+%{_datadir}/tinyproxy
+%attr(0755,root,root) %{_initrddir}/tinyproxy
 %config(noreplace) %{_sysconfdir}/sysconfig/tinyproxy
+%dir %{_sysconfdir}/tinyproxy
 %config(noreplace) %{_sysconfdir}/tinyproxy/tinyproxy.conf
 %config(noreplace) %{_sysconfdir}/tinyproxy/filter
-%config(noreplace) %{_initrddir}/tinyproxy
