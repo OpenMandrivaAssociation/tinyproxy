@@ -11,7 +11,6 @@ Patch0:         %{name}-makefile.patch
 Group:          System/Servers
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 An anonymizing http proxy which is very light on system resources,
