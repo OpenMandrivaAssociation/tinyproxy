@@ -1,6 +1,6 @@
 Name:           tinyproxy
 Version:        1.6.3
-Release:        %mkrel 3
+Release:        %mkrel 4
 Epoch:          0
 Summary:        Lightweight, non-caching, optionally anonymizing HTTP proxy
 License:        GPL
@@ -11,6 +11,7 @@ Patch0:         %{name}-makefile.patch
 Group:          System/Servers
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
+Provides:	webproxy
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
