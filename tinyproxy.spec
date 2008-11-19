@@ -1,7 +1,7 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
 Version:	1.6.4
-Release:	%mkrel 1
+Release:	%mkrel 2
 Group:		System/Servers
 License:	GPL
 URL:		http://tinyproxy.sourceforge.net/
@@ -36,6 +36,7 @@ autoreconf -fis
     --enable-filter \
     --enable-tunnel \
     --enable-upstream \
+    --enable-transparent-proxy \
     --with-config=%{_sysconfdir}/tinyproxy \
     --with-stathost=localhost \
     --program-prefix=""
