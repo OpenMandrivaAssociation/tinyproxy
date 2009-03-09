@@ -23,7 +23,7 @@ anonymize http requests (allowing for exceptions on a per-header basis).
 %prep
 
 %setup -q
-%patch0 -p1
+%patch0 -p0
 
 cp %{SOURCE1} tinyproxy.init
 
