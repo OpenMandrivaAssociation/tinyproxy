@@ -10,6 +10,7 @@ Source1:	tinyproxy.init
 Patch0:		tinyproxy-makefile.patch
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
+BuildRequires:   devel(libsocks)   
 Provides:	webproxy
 Epoch:		0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -33,6 +34,7 @@ autoreconf -fis
 
 %configure2_5x \
     --enable-xtinyproxy \
+    --enable-socks \
     --enable-filter \
     --enable-tunnel \
     --enable-upstream \
