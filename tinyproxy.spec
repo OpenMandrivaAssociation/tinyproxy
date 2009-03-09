@@ -4,8 +4,8 @@ Version:	1.6.4
 Release:	%mkrel 2
 Group:		System/Servers
 License:	GPL
-URL:		http://tinyproxy.sourceforge.net/
-Source0:	http://mesh.dl.sourceforge.net/sourceforge/tinyproxy/tinyproxy-%{version}.tar.gz
+URL:		https://www.banu.com/%{name}/
+Source0:	https://www.banu.com/pub/%{name}/1.6/%{name}-%{version}.tar.gz
 Source1:	tinyproxy.init
 Patch0:		tinyproxy-makefile.patch
 Requires(post): rpm-helper
