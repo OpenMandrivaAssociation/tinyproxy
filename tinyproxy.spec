@@ -1,9 +1,10 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
 Version:	1.6.4
-Release:	%mkrel 2
+Release:	%mkrel 3
 Group:		System/Servers
-License:	GPL
+# License bundled is gpl v3, but source code say gpl v2 or later
+License:	GPLv2+
 URL:		https://www.banu.com/%{name}/
 Source0:	https://www.banu.com/pub/%{name}/1.6/%{name}-%{version}.tar.gz
 Source1:	tinyproxy.init
