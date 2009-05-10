@@ -11,7 +11,7 @@ Source1:	tinyproxy.init
 Patch0:		tinyproxy-makefile.patch
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
-BuildRequires:   devel(libsocks)   
+BuildRequires:   dante-devel   
 Provides:	webproxy
 Epoch:		0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
