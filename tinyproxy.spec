@@ -1,7 +1,7 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
 Version:	1.6.4
-Release:	%mkrel 3
+Release:	%mkrel 5
 Group:		System/Servers
 # License bundled is gpl v3, but source code say gpl v2 or later
 License:	GPLv2+
@@ -49,18 +49,33 @@ autoreconf -fis
 %install
 rm -rf %{buildroot}
 
-install -d %{buildroot}%{_sysconfdir}/tinyproxy
-install -d %{buildroot}%{_sysconfdir}/sysconfig
-install -d %{buildroot}%{_initrddir}
+%__install -d %{buildroot}%{_sysconfdir}/tinyproxy
+%__install -d %{buildroot}%{_sysconfdir}/logrotate.d
+%__install -d %{buildroot}%{_sysconfdir}/sysconfig
+%__install -d %{buildroot}%{_initrddir}
 
 %makeinstall bindir=%{buildroot}%{_sbindir}
 
 cp -a doc/tinyproxy.conf %{buildroot}%{_sysconfdir}/tinyproxy/tinyproxy.conf
 /bin/touch %{buildroot}%{_sysconfdir}/tinyproxy/filter
 
-install -m0755 tinyproxy.init %{buildroot}%{_initrddir}/tinyproxy
+%__install -m0755 tinyproxy.init %{buildroot}%{_initrddir}/tinyproxy
 
 /bin/echo "FLAGS=\" -c /etc/tinyproxy/tinyproxy.conf\"" > %{buildroot}%{_sysconfdir}/sysconfig/tinyproxy
+
+cat > %{buildroot}%{_sysconfdir}/logrotate.d/tinyproxy <<EOF
+/var/log/tinyproxy.log {
+    rotate 7
+    daily
+    compress
+    missingok
+    postrotate
+    if [ -f /var/run/tinyproxy.pid ]; then
+       /etc/init.d/tinyproxy restart > /dev/null
+    fi
+    endscript
+}
+EOF
 
 %post
 %_post_service tinyproxy
@@ -78,6 +93,7 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_sbindir}/tinyproxy
 %attr(0755,root,root) %{_initrddir}/tinyproxy
 %config(noreplace) %{_sysconfdir}/sysconfig/tinyproxy
+%config(noreplace) %{_sysconfdir}/logrotate.d/tinyproxy
 %dir %{_sysconfdir}/tinyproxy
 %config(noreplace) %{_sysconfdir}/tinyproxy/tinyproxy.conf
 %config(noreplace) %{_sysconfdir}/tinyproxy/filter
