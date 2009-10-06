@@ -1,7 +1,7 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
-Version:	1.6.4
-Release:	%mkrel 6
+Version:	1.6.5
+Release:	%mkrel 1
 Group:		System/Servers
 # License bundled is gpl v3, but source code say gpl v2 or later
 License:	GPLv2+
