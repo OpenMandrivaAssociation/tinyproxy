@@ -8,6 +8,7 @@ License:	GPLv2+
 URL:		https://www.banu.com/%{name}/
 Source0:	https://www.banu.com/pub/%{name}/1.8/%{name}-%{version}.tar.bz2
 Source1:	tinyproxy.init
+BuildRequires: asciidoc
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Provides:	webproxy
