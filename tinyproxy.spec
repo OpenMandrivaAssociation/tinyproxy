@@ -1,17 +1,15 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
-Version:	1.6.5
+Version:	1.8.0
 Release:	%mkrel 1
 Group:		System/Servers
 # License bundled is gpl v3, but source code say gpl v2 or later
 License:	GPLv2+
 URL:		https://www.banu.com/%{name}/
-Source0:	https://www.banu.com/pub/%{name}/1.6/%{name}-%{version}.tar.gz
+Source0:	https://www.banu.com/pub/%{name}/1.8/%{name}-%{version}.tar.bz2
 Source1:	tinyproxy.init
-Patch0:		tinyproxy-makefile.patch
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
-BuildRequires:   dante-devel   
 Provides:	webproxy
 Epoch:		0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -25,22 +23,19 @@ anonymize http requests (allowing for exceptions on a per-header basis).
 %prep
 
 %setup -q
-%patch0 -p0
 
 cp %{SOURCE1} tinyproxy.init
 
 %build
 %serverbuild
-autoreconf -fis
 
 %configure2_5x \
     --enable-xtinyproxy \
-    --enable-socks \
     --enable-filter \
-    --enable-tunnel \
     --enable-upstream \
-    --enable-transparent-proxy \
-    --with-config=%{_sysconfdir}/tinyproxy \
+    --enable-transparent \
+    --enable-reverse \
+    --sysconfdir=%{_sysconfdir}/tinyproxy \
     --with-stathost=localhost \
     --program-prefix=""
 
@@ -56,7 +51,7 @@ rm -rf %{buildroot}
 
 %makeinstall bindir=%{buildroot}%{_sbindir}
 
-cp -a doc/tinyproxy.conf %{buildroot}%{_sysconfdir}/tinyproxy/tinyproxy.conf
+mv %{buildroot}%{_sysconfdir}/tinyproxy.conf %{buildroot}%{_sysconfdir}/tinyproxy/tinyproxy.conf
 /bin/touch %{buildroot}%{_sysconfdir}/tinyproxy/filter
 
 %__install -m0755 tinyproxy.init %{buildroot}%{_initrddir}/tinyproxy
@@ -88,7 +83,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(0644,root,root,0755)
-%doc doc/{HTTP_ERROR_CODES,RFC_INFO,report.sh,tinyproxy.conf,filter-howto.txt}
+%doc docs/*.txt
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO 
 %attr(0755,root,root) %{_sbindir}/tinyproxy
 %attr(0755,root,root) %{_initrddir}/tinyproxy
@@ -98,4 +93,5 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/tinyproxy/tinyproxy.conf
 %config(noreplace) %{_sysconfdir}/tinyproxy/filter
 %{_mandir}/man8/tinyproxy.8*
+%{_mandir}/man5/*
 %{_datadir}/tinyproxy
