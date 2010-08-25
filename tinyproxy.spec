@@ -1,6 +1,6 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
-Version:	1.8.0
+Version:	1.8.2
 Release:	%mkrel 1
 Group:		System/Servers
 # License bundled is gpl v3, but source code say gpl v2 or later
@@ -8,7 +8,7 @@ License:	GPLv2+
 URL:		https://www.banu.com/%{name}/
 Source0:	https://www.banu.com/pub/%{name}/1.8/%{name}-%{version}.tar.bz2
 Source1:	tinyproxy.init
-BuildRequires: asciidoc docbook-style-xsl
+BuildRequires:	asciidoc, docbook-style-xsl, docbook-dtd45-xml
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Provides:	webproxy
@@ -43,12 +43,15 @@ cp %{SOURCE1} tinyproxy.init
 %make
 
 %install
-rm -rf %{buildroot}
+%__rm -rf %{buildroot}
 
 %__install -d %{buildroot}%{_sysconfdir}/tinyproxy
 %__install -d %{buildroot}%{_sysconfdir}/logrotate.d
 %__install -d %{buildroot}%{_sysconfdir}/sysconfig
 %__install -d %{buildroot}%{_initrddir}
+
+%__install -d %{buildroot}%{_logdir}/tinyproxy
+%__install -d %{buildroot}%{_var}/run/tinyproxy
 
 %makeinstall bindir=%{buildroot}%{_sbindir}
 
@@ -80,7 +83,7 @@ EOF
 %_preun_service tinyproxy
 
 %clean
-rm -rf %{buildroot}
+%__rm -rf %{buildroot}
 
 %files
 %defattr(0644,root,root,0755)
@@ -93,6 +96,8 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/tinyproxy
 %config(noreplace) %{_sysconfdir}/tinyproxy/tinyproxy.conf
 %config(noreplace) %{_sysconfdir}/tinyproxy/filter
+%{_logdir}/tinyproxy/
+%{_var}/run/tinyproxy/
 %{_mandir}/man8/tinyproxy.8*
 %{_mandir}/man5/*
 %{_datadir}/tinyproxy
