@@ -1,19 +1,22 @@
 Summary:	Lightweight, non-caching, optionally anonymizing HTTP proxy
 Name:		tinyproxy
 Version:	1.8.3
-Release:	1
+%define subrel	1
+Release:	%mkrel 1
 Group:		System/Servers
 # License bundled is gpl v3, but source code say gpl v2 or later
 License:	GPLv2+
 URL:		https://www.banu.com/%{name}/
 Source0:	https://www.banu.com/pub/%{name}/1.8/%{name}-%{version}.tar.bz2
 Source1:	tinyproxy.init
-BuildRequires:	asciidoc, docbook-style-xsl, docbook-dtd45-xml
+Patch0:		tinyproxy-CVE-2012-3505-randomized-hashmaps.patch
+Patch1:		tinyproxy-CVE-2012-3505-limit-headers.patch
+BuildRequires:	asciidoc
+BuildRequires:	xsltproc
+BuildRequires:  docbook-style-xsl
+BuildRequires:  docbook-dtd45-xml
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
-Provides:	webproxy
-Epoch:		0
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 An anonymizing http proxy which is very light on system resources, ideal for
@@ -24,6 +27,8 @@ anonymize http requests (allowing for exceptions on a per-header basis).
 %prep
 
 %setup -q
+%patch0 -p1 -b .randomized-hashmaps
+%patch1 -p1 -b .limit-headers
 
 cp %{SOURCE1} tinyproxy.init
 
@@ -82,11 +87,8 @@ EOF
 %preun
 %_preun_service tinyproxy
 
-%clean
-%__rm -rf %{buildroot}
 
 %files
-%defattr(0644,root,root,0755)
 %doc docs/*.txt
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO 
 %attr(0755,root,root) %{_sbindir}/tinyproxy
@@ -101,3 +103,24 @@ EOF
 %{_mandir}/man8/tinyproxy.8*
 %{_mandir}/man5/*
 %{_datadir}/tinyproxy
+
+
+
+
+%changelog
+
+* Wed Oct 24 2012 luigiwalser <luigiwalser> 1.8.3-1.1.mga2
++ Revision: 309740
+- add patches from debian to fix CVE-2012-3505
+
+  + misc <misc>
+    - fix initscript keyword ( rpmlint rejection)
+    - upgrade to newer version 1.8.3
+    - remove ndded part of the spec file
+    - place each BuildRequires on a line ( easier to spot change )
+    - remove provides on webproxy ( not required anywhere, and provides
+      are not mean to be used for categorization )
+    - remove Epoch 0 ( breaking upgrade path, but we do not plan to support
+      upgrade from 2010.2 or 2011 to mageia 2 )
+    - imported package tinyproxy
+
