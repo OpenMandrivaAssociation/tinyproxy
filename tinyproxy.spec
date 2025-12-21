@@ -11,6 +11,11 @@ Source0:	https://www.banu.com/pub/%{name}/1.8/%{name}-%{version}.tar.bz2
 Source1:	tinyproxy.init
 Patch0:		tinyproxy-CVE-2012-3505-randomized-hashmaps.patch
 Patch1:		tinyproxy-CVE-2012-3505-limit-headers.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	asciidoc
 BuildRequires:	xsltproc
 BuildRequires:  docbook-style-xsl
